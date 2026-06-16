@@ -292,6 +292,7 @@ function M.setup()
     hi("@number.float", { fg = c.syntax_boolean })
     hi("@operator", { fg = c.syntax_type })
     hi("@property", { fg = c.syntax_property })
+    hi("@field", { fg = c.syntax_property })
     hi("@punctuation.bracket", { fg = c.syntax_punctuation_bracket })
     hi("@punctuation.delimiter", { fg = c.syntax_punctuation_bracket })
     hi("@punctuation.special", { fg = c.syntax_punctuation_special })
@@ -309,6 +310,8 @@ function M.setup()
     hi("@variable", { fg = c.syntax_primary })
     hi("@variable.builtin", { fg = c.syntax_boolean })
     hi("@variable.member", { fg = c.syntax_property })
+    hi("@variable.readonly", { link = "Constant" })
+    hi("@variable.member.readonly", { link = "Constant" })
     hi("@markup.heading", { fg = c.syntax_property, bold = true })
     hi("@markup.italic", { italic = true })
     hi("@markup.link", { fg = c.syntax_function, italic = true })
@@ -324,6 +327,27 @@ function M.setup()
     hi("OilHidden", { fg = c.placeholder })
     hi("OilLink", { fg = c.cyan })
     hi("OilStatusLine", { fg = c.fg, bg = c.surface_alt, bold = true })
+
+    -- LSP semantic tokens mapping
+    hi("@lsp.type.class", { link = "Type" })
+    hi("@lsp.type.decorator", { link = "Identifier" })
+    hi("@lsp.type.enum", { link = "Type" })
+    hi("@lsp.type.enumMember", { link = "Constant" })
+    hi("@lsp.type.function", { link = "Function" })
+    hi("@lsp.type.interface", { link = "Type" })
+    hi("@lsp.type.macro", { link = "Macro" })
+    hi("@lsp.type.method", { link = "Function" })
+    hi("@lsp.type.namespace", { fg = c.syntax_primary })
+    hi("@lsp.type.parameter", { fg = c.syntax_primary })
+    hi("@lsp.type.property", { fg = c.syntax_property })
+    hi("@lsp.type.property.readonly", { link = "Constant" })
+    hi("@lsp.type.struct", { link = "Type" })
+    hi("@lsp.type.type", { link = "Type" })
+    hi("@lsp.type.typeParameter", { link = "Type" })
+    hi("@lsp.type.variable", { fg = c.syntax_primary })
+    hi("@lsp.type.variable.readonly", { link = "Constant" })
+    hi("@lsp.typemod.variable.static", { link = "Constant" })
+    hi("@lsp.typemod.property.static", { link = "Constant" })
 
     local terminal_colors = {
         c.black,
@@ -348,10 +372,13 @@ function M.setup()
         vim.g["terminal_color_" .. (i - 1)] = color
     end
 
-    vim.api.nvim_create_user_command("FlumeReload", function()
+    local function reload()
+        package.loaded["flume"] = nil
         vim.cmd("colorscheme flume")
-        vim.notify("Flume colorscheme reloaded from Ghostty config!", vim.log.levels.INFO)
-    end, {})
+        vim.notify("Flume theme reloaded!", vim.log.levels.INFO)
+    end
+
+    vim.api.nvim_create_user_command("FlumeReload", reload, {})
 end
 
 return M

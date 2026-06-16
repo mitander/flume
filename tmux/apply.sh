@@ -8,9 +8,9 @@ if [ ! -f "$FILE" ]; then
 fi
 
 # Target file to write
-TARGET_DIR=~/dotfiles/tmux/.config/tmux/tmp
+TARGET_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/tmux"
 mkdir -p "$TARGET_DIR"
-TARGET_FILE="$TARGET_DIR/colors.conf"
+TARGET_FILE="$TARGET_DIR/flume-colors.conf"
 
 # Generate colors.conf in a single pass using awk
 awk -F'=' '
@@ -82,6 +82,11 @@ awk -F'=' '
 cat <<'EOF' >> "$TARGET_FILE"
 
 # Apply styles
+set -g status "on"
+set -g status-left-length "100"
+set -g status-right-length "100"
+set -g status-position bottom
+set -g status-justify centre
 set -g status-style bg=$thm_gray,fg=$thm_fg
 set -g status-left " #[bold]#[fg=$thm_blue, bg=$thm_gray]#H #[bold]#[fg=$thm_green, bg=$thm_gray]#S "
 set -g status-right "#[bold]#[fg=$thm_green, bg=$thm_gray]CPU#[default]#[bold]:#{cpu_percentage} #[bold]#[fg=$thm_blue, bg=$thm_gray]RAM#[default]#[bold]:#{ram_percentage} "

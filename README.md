@@ -1,28 +1,22 @@
-# Flume
+<div align="center">
+  <h1>Flume</h1>
+  <p>
+    <strong>Small waves. Soft contrast. Readable code.</strong><br>
+    Inspired by One Dark, Duskfox and Kanagawa.
+  </p>
+</div>
 
-A wavy theme inspired by One Dark, Duskfox and Kanagawa.
+<br>
 
-![Flume Theme Showcase](screenshot.png)
+<div align="center">
+  <img src="screenshot.png" alt="Flume screenshot in Ghostty and Neovim" width="800">
+</div>
 
-## Setup & Installation
+## Install
 
-### 1. Ghostty Config
+### Neovim
 
-Copy or symlink `ghostty/flume` into your Ghostty themes folder:
-
-```bash
-ln -sf ~/dotfiles/themes/flume/ghostty/flume ~/.config/ghostty/themes/flume
-```
-
-Then, select it in your `ghostty/config`:
-
-```ini
-theme = flume
-```
-
-### 2. Neovim Plugin Setup
-
-If using `lazy.nvim`, load the plugin from your local submodule path:
+With `lazy.nvim`, point at this directory and load it like a normal colorscheme:
 
 ```lua
 return {
@@ -31,17 +25,38 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-        require("flume").setup()
+        vim.cmd.colorscheme("flume")
     end,
 }
 ```
 
-Run `:FlumeReload` to instantly hot-reload the highlights without restarting
+Tweaking colors? Reload without restarting Neovim:
 
-### 3. Tmux Configuration
+```vim
+:FlumeReload
+```
 
-Add the following line to your `~/.tmux.conf` to dynamically load the styles on startup or reload:
+### Ghostty
+
+Symlink the theme into Ghostty's theme directory:
+
+```bash
+mkdir -p ~/.config/ghostty/themes
+ln -sf ~/dotfiles/themes/flume/ghostty/flume ~/.config/ghostty/themes/flume
+```
+
+Then enable it in `~/.config/ghostty/config`:
+
+```ini
+theme = flume
+```
+
+### Tmux
+
+Add this to `~/.tmux.conf`:
 
 ```tmux
 run-shell "~/dotfiles/themes/flume/tmux/apply.sh"
 ```
+
+Reload tmux and it will generate/apply matching status-line colors from the Ghostty palette.
