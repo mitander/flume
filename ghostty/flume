@@ -1,0 +1,38 @@
+# Original Flume Theme
+background = #232136
+foreground = #e0def4
+selection-background = #393552
+selection-foreground = #e0def4
+cursor-color = #569fba
+cursor-text = #232136
+
+palette = 0=#393552
+palette = 1=#eb6f92
+palette = 2=#a3be8c
+palette = 3=#f6c177
+palette = 4=#569fba
+palette = 5=#c4a7e7
+palette = 6=#9ccfd8
+palette = 7=#e0def4
+palette = 8=#47407d
+palette = 9=#f083a2
+palette = 10=#b1d196
+palette = 11=#f9cb8c
+palette = 12=#65b1cd
+palette = 13=#ccb1ed
+palette = 14=#a6dae3
+palette = 15=#e2e0f7
+
+# Neovim custom overrides:
+# border = #56526e
+# border_variant = #44415a
+# syntax_boolean = #eb98c3
+# syntax_comment = #6e6a86
+# syntax_doc_comment = #878e98
+# syntax_punctuation_special = #b1574b
+# predictive = #5a6a87
+# diff_add_bg = #2f3d2d
+# diff_change_bg = #2d3a45
+# diff_delete_bg = #402834
+# hint_bg = #2d3a45
+# warn_bg = #493b2b
