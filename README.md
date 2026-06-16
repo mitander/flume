@@ -2,6 +2,8 @@
 
 A wavy theme inspired by One Dark, Duskfox and Kanagawa.
 
+![Flume Theme Showcase](screenshot.png)
+
 ## Setup & Installation
 
 ### 1. Ghostty Config
