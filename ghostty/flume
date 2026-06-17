@@ -29,6 +29,9 @@ palette = 15=#e2e0f7
 # syntax_boolean = #eb98c3
 # syntax_comment = #6e6a86
 # syntax_doc_comment = #878e98
+# syntax_namespace = #e07a84
+# syntax_punctuation = #c8c4dd
+# syntax_punctuation_bracket = #bdb8d0
 # syntax_punctuation_special = #b1574b
 # predictive = #5a6a87
 # diff_add_bg = #2f3d2d

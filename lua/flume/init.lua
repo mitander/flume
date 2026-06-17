@@ -54,10 +54,11 @@ M.colors = {
     syntax_function = "#73ade9",
     syntax_type = "#65b1cd",
     syntax_keyword = "#c4a7e7",
+    syntax_namespace = "#e07a84",
     syntax_primary = "#d8d5ea",
     syntax_property = "#e07a84",
-    syntax_punctuation = "#d8d5ea",
-    syntax_punctuation_bracket = "#d8d5ea",
+    syntax_punctuation = "#c8c4dd",
+    syntax_punctuation_bracket = "#bdb8d0",
     syntax_punctuation_special = "#b1574b",
     syntax_string = "#a3be8c",
     syntax_special = "#eb98c3",
@@ -267,6 +268,10 @@ function M.setup()
     hi("Error", { fg = c.red })
     hi("Todo", { fg = c.yellow, bg = "NONE", bold = true })
 
+    -- Legacy Zig syntax group for @builtins when tree-sitter/LSP semantic
+    -- highlighting is unavailable or disabled.
+    hi("zigBuiltinFn", { fg = c.syntax_special })
+
     hi("@attribute", { fg = c.syntax_attribute })
     hi("@boolean", { fg = c.syntax_boolean })
     hi("@character", { fg = c.syntax_string })
@@ -337,7 +342,11 @@ function M.setup()
     hi("@lsp.type.interface", { link = "Type" })
     hi("@lsp.type.macro", { link = "Macro" })
     hi("@lsp.type.method", { link = "Function" })
-    hi("@lsp.type.namespace", { fg = c.syntax_primary })
+    hi("@lsp.type.builtin", { fg = c.syntax_special })
+    hi("@lsp.type.builtin.zig", { fg = c.syntax_special })
+    -- Avoid flattening dotted Zig namespaces like render.camera into one color;
+    -- Tree-sitter can still color the member side via @variable.member.
+    hi("@lsp.type.namespace", {})
     hi("@lsp.type.parameter", { fg = c.syntax_primary })
     hi("@lsp.type.property", { fg = c.syntax_property })
     hi("@lsp.type.property.readonly", { link = "Constant" })
@@ -348,6 +357,31 @@ function M.setup()
     hi("@lsp.type.variable.readonly", { link = "Constant" })
     hi("@lsp.typemod.variable.static", { link = "Constant" })
     hi("@lsp.typemod.property.static", { link = "Constant" })
+
+    hi("FlumeDottedNamespace", { fg = c.syntax_namespace })
+
+    local semantic_tokens = vim.lsp and vim.lsp.semantic_tokens
+    if semantic_tokens and semantic_tokens.highlight_token then
+        local group = vim.api.nvim_create_augroup("FlumeSemanticTokens", { clear = true })
+        vim.api.nvim_create_autocmd("LspTokenUpdate", {
+            group = group,
+            callback = function(ev)
+                local token = ev.data and ev.data.token
+                if not token or token.type ~= "namespace" or vim.bo[ev.buf].filetype ~= "zig" then
+                    return
+                end
+
+                local line = vim.api.nvim_buf_get_lines(ev.buf, token.line, token.line + 1, false)[1] or ""
+                local prefix = line:sub(1, token.start_col)
+                if prefix:match("%.$") then
+                    semantic_tokens.highlight_token(token, ev.buf, ev.data.client_id, "FlumeDottedNamespace")
+                end
+            end,
+        })
+        if semantic_tokens.force_refresh then
+            pcall(semantic_tokens.force_refresh, 0)
+        end
+    end
 
     local terminal_colors = {
         c.black,
