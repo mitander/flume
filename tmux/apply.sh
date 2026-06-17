@@ -94,7 +94,16 @@ set -g window-status-separator " "
 set -g window-status-current-format "#[bold]#[fg=$thm_fg, bg=$thm_gray]#I:#[fg=$thm_blue, bg=$thm_gray]#{b:pane_current_path}#[fg=$thm_fg, bg=$thm_gray]:#[fg=$thm_green, bg=$thm_gray]#W"
 set -g window-status-format "#[bold]#[fg=$thm_lgray, bg=$thm_gray]#I:#{b:pane_current_path}:#W"
 set -g pane-border-style fg=$thm_gray
-set -g pane-active-border-style fg=$thm_gray
+set -g pane-active-border-style fg=$thm_lgray
+set -g pane-border-indicators off
+set -g pane-border-lines single
+set -g pane-border-status off
+set -g pane-border-format "#{?pane_active,#[fg=$thm_lgray]#{R:─,#{pane_width}}#[default],}"
+set-hook -g after-split-window[99] 'if -F "#{>:#{window_panes},1}" "set -w pane-border-status top" "set -w pane-border-status off"'
+set-hook -g after-kill-pane[99] 'if -F "#{>:#{window_panes},1}" "set -w pane-border-status top" "set -w pane-border-status off"'
+set-hook -g pane-exited[99] 'if -F "#{>:#{window_panes},1}" "set -w pane-border-status top" "set -w pane-border-status off"'
+set-hook -g window-layout-changed[99] 'if -F "#{>:#{window_panes},1}" "set -w pane-border-status top" "set -w pane-border-status off"'
+run-shell -b 'tmux -S "#{socket_path}" list-windows -a -F "##{window_id} ##{window_panes}" | while read -r win panes; do if [ "$panes" -gt 1 ]; then tmux -S "#{socket_path}" set -w -t "$win" pane-border-status top; else tmux -S "#{socket_path}" set -w -t "$win" pane-border-status off; fi; done'
 EOF
 
 # Source the generated file in TMUX
