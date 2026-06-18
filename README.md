@@ -9,7 +9,7 @@
 <br>
 
 <div align="center">
-  <img src="screenshot.png" alt="Flume screenshot in Ghostty and Neovim" width="800">
+  <img src="screenshot.png" alt="Flume Theme Screenshot" width="1200">
 </div>
 
 ## Install
@@ -20,7 +20,7 @@ With `lazy.nvim`, point at this directory and load it like a normal colorscheme:
 
 ```lua
 return {
-    dir = vim.fn.expand("~/dotfiles/themes/flume"),
+    dir = vim.fn.expand("~/path/to/flume"),
     name = "flume.nvim",
     lazy = false,
     priority = 1000,
@@ -53,10 +53,15 @@ theme = flume
 
 ### Tmux
 
-Add this to `~/.tmux.conf`:
+Symlink the tmux theme variables into your tmux config directory:
 
-```tmux
-run-shell "~/dotfiles/themes/flume/tmux/apply.sh"
+```bash
+mkdir -p ~/.tmux
+ln -sf ~/path/to/flume/tmux/colors.conf ~/.tmux/flume-theme.conf
 ```
 
-Reload tmux and it will generate/apply matching status-line colors from the Ghostty palette.
+Then source it before your own status/pane styling:
+
+```tmux
+source-file "~/.tmux/flume-theme.conf"
+```
