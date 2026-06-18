@@ -1,0 +1,59 @@
+# Flume colors for lsd.
+# lsd 1.1.x uses crossterm color values; use xterm-256 approximations
+# instead of #RRGGBB so the theme is actually applied.
+
+name:
+  file: 253          # syntax_primary (#d8d5ea)
+  dir: 73            # accent / blue (#569fba)
+  pipe: 152          # cyan (#9ccfd8)
+  symlink: 152       # cyan (#9ccfd8)
+  block-device: 182  # magenta (#c4a7e7)
+  char-device: 182   # magenta (#c4a7e7)
+  socket: 182        # magenta (#c4a7e7)
+  special: 175       # syntax_special (#eb98c3)
+
+user: 103            # muted (#908caa)
+group: 60            # placeholder/comment (#6e6a86)
+
+permission:
+  read: 103          # muted (#908caa)
+  write: 216         # yellow (#f6c177)
+  exec: 144          # green (#a3be8c)
+  exec-sticky: 182   # magenta (#c4a7e7)
+  no-access: 60      # placeholder/comment (#6e6a86)
+  octal: 74          # bright_blue (#65b1cd)
+  acl: 152           # cyan (#9ccfd8)
+  context: 245       # doc_comment (#878e98)
+
+date:
+  hour-old: 253      # syntax_primary (#d8d5ea)
+  day-old: 103       # muted (#908caa)
+  older: 60          # placeholder/comment (#6e6a86)
+
+size:
+  none: 60           # placeholder/comment (#6e6a86)
+  small: 103         # muted (#908caa)
+  medium: 152        # cyan (#9ccfd8)
+  large: 216         # yellow (#f6c177)
+
+inode:
+  valid: 103         # muted (#908caa)
+  invalid: 60        # placeholder/comment (#6e6a86)
+
+links:
+  valid: 103         # muted (#908caa)
+  invalid: 60        # placeholder/comment (#6e6a86)
+
+tree-edge: 239       # border_variant (#44415a)
+
+git-status:
+  default: 60        # placeholder/comment (#6e6a86)
+  unmodified: 60
+  ignored: 60
+  new-in-index: 144  # green (#a3be8c)
+  new-in-workdir: 144
+  typechange: 216    # yellow (#f6c177)
+  deleted: 168       # red (#eb6f92)
+  renamed: 73        # accent / blue (#569fba)
+  modified: 216      # yellow (#f6c177)
+  conflicted: 211    # bright_red (#f083a2)
