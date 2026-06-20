@@ -1,168 +1,41 @@
 local M = {}
 
-M.colors = {
-    border = "#56526e",
-    border_variant = "#44415a",
-    border_focused = "#569fba",
-    surface = "#2a273f",
-    surface_alt = "#393552",
-    element = "#2a273f",
-    element_hover = "#393552",
-    element_active = "#44415a",
-    bg = "#232136",
-    terminal_bg = "#232136",
-    fg = "#e0def4",
-    text = "#e0def4",
-    muted = "#908caa",
-    placeholder = "#6e6a86",
-    accent = "#569fba",
-    active_line = "#2a273f",
-    line_number = "#6e6a86",
-    active_line_number = "#e0def4",
-    indent_guide = "#393552",
-
-    black = "#393552",
-    bright_black = "#47407d",
-    dim_black = "#2a273f",
-    red = "#eb6f92",
-    bright_red = "#f083a2",
-    dim_red = "#a84a62",
-    green = "#a3be8c",
-    bright_green = "#b1d196",
-    dim_green = "#71885f",
-    yellow = "#f6c177",
-    bright_yellow = "#f9cb8c",
-    dim_yellow = "#b88752",
-    blue = "#569fba",
-    bright_blue = "#65b1cd",
-    dim_blue = "#3c7288",
-    magenta = "#c4a7e7",
-    bright_magenta = "#ccb1ed",
-    dim_magenta = "#8c74aa",
-    cyan = "#9ccfd8",
-    bright_cyan = "#a6dae3",
-    dim_cyan = "#6f969e",
-    white = "#e0def4",
-    bright_white = "#e2e0f7",
-    dim_white = "#908caa",
-
-    syntax_attribute = "#74ade8",
-    syntax_boolean = "#eb98c3",
-    syntax_comment = "#6e6a86",
-    syntax_doc_comment = "#878e98",
-    syntax_constant = "#dfc184",
-    syntax_function = "#73ade9",
-    syntax_type = "#65b1cd",
-    syntax_keyword = "#c4a7e7",
-    syntax_namespace = "#e07a84",
-    syntax_primary = "#d8d5ea",
-    syntax_property = "#e07a84",
-    syntax_punctuation = "#c8c4dd",
-    syntax_punctuation_bracket = "#bdb8d0",
-    syntax_punctuation_special = "#b1574b",
-    syntax_string = "#a3be8c",
-    syntax_special = "#eb98c3",
-    predictive = "#5a6a87",
-
-    diff_add_bg = "#2f3d2d",
-    diff_change_bg = "#2d3a45",
-    diff_delete_bg = "#402834",
-    hint = "#9ccfd8",
-    hint_bg = "#2d3a45",
-    warn_bg = "#493b2b",
+M.colors = {}
+M.config = {
+    transparent = false,
+    overrides = {},
 }
-
-local function load_ghostty_colors()
-    local paths = {
-        vim.fn.expand("~/.config/ghostty/themes/flume"),
-        vim.fn.expand("~/dotfiles/ghostty/.config/ghostty/themes/flume"),
-    }
-    local f
-    for _, path in ipairs(paths) do
-        f = io.open(path, "r")
-        if f then
-            break
-        end
-    end
-    if not f then
-        return
-    end
-
-    local ghostty = {}
-    for line in f:lines() do
-        local clean_line = line:match("^%s*(.-)%s*$")
-        if clean_line and clean_line ~= "" then
-            local _, key, val = clean_line:match("^(#?)%s*([%w%-_]+)%s*=%s*(#[%da-fA-F]+)$")
-            if not key then
-                local _, pal_val = clean_line:match("^(#?)%s*palette%s*=%s*(.+)$")
-                if pal_val then
-                    local idx, color = pal_val:match("^(%d+)%s*=%s*(#[%da-fA-F]+)$")
-                    if idx and color then
-                        ghostty["color_" .. idx] = color
-                    end
-                end
-            else
-                ghostty[key] = val
-            end
-        end
-    end
-    f:close()
-
-    local c = M.colors
-    if ghostty.background then
-        c.bg = ghostty.background
-        c.terminal_bg = ghostty.background
-        c.element = ghostty.background
-    end
-    if ghostty.foreground then
-        c.fg = ghostty.foreground
-        c.text = ghostty.foreground
-        c.syntax_primary = ghostty.foreground
-    end
-    if ghostty["selection-background"] then
-        c.surface_alt = ghostty["selection-background"]
-        c.active_line = ghostty["selection-background"]
-        c.indent_guide = ghostty["selection-background"]
-    end
-
-    local map = {
-        color_0 = "black",
-        color_1 = "red",
-        color_2 = "green",
-        color_3 = "yellow",
-        color_4 = "blue",
-        color_5 = "magenta",
-        color_6 = "cyan",
-        color_7 = "white",
-        color_8 = "bright_black",
-        color_9 = "bright_red",
-        color_10 = "bright_green",
-        color_11 = "bright_yellow",
-        color_12 = "bright_blue",
-        color_13 = "bright_magenta",
-        color_14 = "bright_cyan",
-        color_15 = "bright_white",
-    }
-    for k, v in pairs(map) do
-        if ghostty[k] then
-            c[v] = ghostty[k]
-        end
-    end
-
-    for k, v in pairs(ghostty) do
-        if c[k] ~= nil then
-            c[k] = v
-        end
-    end
-end
 
 local function hi(group, opts)
     vim.api.nvim_set_hl(0, group, opts)
 end
 
-function M.setup()
-    load_ghostty_colors()
+local function is_dotted_zig_namespace(ev)
+    local token = ev.data and ev.data.token
+    if not token or token.type ~= "namespace" or vim.bo[ev.buf].filetype ~= "zig" then
+        return false
+    end
+
+    local line = vim.api.nvim_buf_get_lines(ev.buf, token.line, token.line + 1, false)[1] or ""
+    return line:sub(1, token.start_col):match("%.$") ~= nil
+end
+
+function M.setup(opts)
+    M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+    M.load()
+end
+
+function M.load()
+    local palette = require("flume.palette")
+    M.colors = vim.tbl_deep_extend("force", {}, palette.colors, M.config.overrides or {})
     local c = M.colors
+
+    if M.config.transparent then
+        c.bg = "NONE"
+        c.terminal_bg = "NONE"
+        c.element = "NONE"
+    end
+
     vim.o.background = "dark"
     vim.g.colors_name = "flume"
 
@@ -362,19 +235,12 @@ function M.setup()
 
     local semantic_tokens = vim.lsp and vim.lsp.semantic_tokens
     if semantic_tokens and semantic_tokens.highlight_token then
-        local group = vim.api.nvim_create_augroup("FlumeSemanticTokens", { clear = true })
+        local augroup = vim.api.nvim_create_augroup("FlumeSemanticTokens", { clear = true })
         vim.api.nvim_create_autocmd("LspTokenUpdate", {
-            group = group,
+            group = augroup,
             callback = function(ev)
-                local token = ev.data and ev.data.token
-                if not token or token.type ~= "namespace" or vim.bo[ev.buf].filetype ~= "zig" then
-                    return
-                end
-
-                local line = vim.api.nvim_buf_get_lines(ev.buf, token.line, token.line + 1, false)[1] or ""
-                local prefix = line:sub(1, token.start_col)
-                if prefix:match("%.$") then
-                    semantic_tokens.highlight_token(token, ev.buf, ev.data.client_id, "FlumeDottedNamespace")
+                if is_dotted_zig_namespace(ev) then
+                    semantic_tokens.highlight_token(ev.data.token, ev.buf, ev.data.client_id, "FlumeDottedNamespace")
                 end
             end,
         })
@@ -408,11 +274,15 @@ function M.setup()
 
     local function reload()
         package.loaded["flume"] = nil
+        package.loaded["flume.palette"] = nil
         vim.cmd("colorscheme flume")
         vim.notify("Flume theme reloaded!", vim.log.levels.INFO)
     end
 
     vim.api.nvim_create_user_command("FlumeReload", reload, {})
+    vim.api.nvim_create_user_command("FlumeCompile", function()
+        require("flume.compiler").compile_all()
+    end, {})
 end
 
 return M

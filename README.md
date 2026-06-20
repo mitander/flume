@@ -1,7 +1,7 @@
 <div align="center">
-  <h1>Flume</h1>
+  <!-- <h1>flume.nvim</h1> -->
   <p>
-    <strong>Small waves. Soft contrast. Readable code.</strong><br>
+    <strong>Organic synthesis. Soft contrast. Resonant code.</strong><br>
     Inspired by One Dark, Duskfox and Kanagawa.
   </p>
 </div>
@@ -16,33 +16,69 @@
 
 ### Neovim
 
-With `lazy.nvim`, point at this directory and load it like a normal colorscheme:
+#### Install from GitHub
+
+Using `lazy.nvim`:
 
 ```lua
-return {
-    dir = vim.fn.expand("~/path/to/flume"),
-    name = "flume.nvim",
+{
+    "mitander/flume.nvim",
     lazy = false,
     priority = 1000,
-    config = function()
+    opts = {
+        transparent = false, -- Set to true to disable background colors
+        overrides = {},      -- Map highlight groups or colors to override
+    },
+    config = function(_, opts)
+        require("flume").setup(opts)
         vim.cmd.colorscheme("flume")
     end,
 }
 ```
 
-Tweaking colors? Reload without restarting Neovim:
+#### Local Clone
 
-```vim
-:FlumeReload
+```lua
+{
+    "mitander/flume.nvim",
+    dir = "~/path/to/flume.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {
+        transparent = false,
+    },
+    config = function(_, opts)
+        require("flume").setup(opts)
+        vim.cmd.colorscheme("flume")
+    end,
+}
 ```
+
+### Hacking on the theme
+
+If you are modifying colors or configurations:
+
+1. Edit colors in `lua/flume/palette.lua`.
+2. Reload theme with `:FlumeReload`.
+3. Compile the theme for other applications with `:FlumeCompile`, or from a shell:
+
+```sh
+nvim --headless -c "lua require('flume.compiler').compile_all()" -c "qa"
+```
+
+4. Launch the Ghostty screenshot environment: `./scripts/screenshot-window.sh`.
+
+## Extras
+
+Flume includes theme configurations for other applications under the `extras/` directory.
 
 ### Ghostty
 
-Symlink the theme into Ghostty's theme directory:
+Symlink the generated theme into Ghostty's theme directory:
 
 ```bash
 mkdir -p ~/.config/ghostty/themes
-ln -sf ~/dotfiles/themes/flume/ghostty/flume ~/.config/ghostty/themes/flume
+ln -sf <flume_dir>/extras/ghostty/flume ~/.config/ghostty/themes/flume
 ```
 
 Then enable it in `~/.config/ghostty/config`:
@@ -57,11 +93,20 @@ Symlink the tmux theme variables into your tmux config directory:
 
 ```bash
 mkdir -p ~/.tmux
-ln -sf ~/path/to/flume/tmux/colors.conf ~/.tmux/flume-theme.conf
+ln -sf <flume_dir>/extras/tmux/colors.conf ~/.tmux/flume-theme.conf
 ```
 
-Then source it before your own status/pane styling:
+Then source it in your `~/.tmux.conf`:
 
 ```tmux
 source-file "~/.tmux/flume-theme.conf"
+```
+
+### LSD
+
+Symlink the lsd theme variables:
+
+```bash
+mkdir -p ~/.config/lsd
+ln -sf <flume_dir>/extras/lsd/colors.yaml ~/.config/lsd/colors.yaml
 ```

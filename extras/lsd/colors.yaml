@@ -3,7 +3,7 @@
 # instead of #RRGGBB so the theme is actually applied.
 
 name:
-  file: 253          # syntax_primary (#d8d5ea)
+  file: 189          # syntax_primary (#e0def4)
   dir: 73            # accent / blue (#569fba)
   pipe: 152          # cyan (#9ccfd8)
   symlink: 152       # cyan (#9ccfd8)
@@ -26,7 +26,7 @@ permission:
   context: 245       # doc_comment (#878e98)
 
 date:
-  hour-old: 253      # syntax_primary (#d8d5ea)
+  hour-old: 189      # syntax_primary (#e0def4)
   day-old: 103       # muted (#908caa)
   older: 60          # placeholder/comment (#6e6a86)
 
@@ -38,20 +38,20 @@ size:
 
 inode:
   valid: 103         # muted (#908caa)
-  invalid: 60        # placeholder/comment (#6e6a86)
+  invalid: 60         # placeholder/comment (#6e6a86)
 
 links:
   valid: 103         # muted (#908caa)
-  invalid: 60        # placeholder/comment (#6e6a86)
+  invalid: 60         # placeholder/comment (#6e6a86)
 
 tree-edge: 239       # border_variant (#44415a)
 
 git-status:
   default: 60        # placeholder/comment (#6e6a86)
-  unmodified: 60
-  ignored: 60
+  unmodified: 60     # placeholder/comment (#6e6a86)
+  ignored: 60        # placeholder/comment (#6e6a86)
   new-in-index: 144  # green (#a3be8c)
-  new-in-workdir: 144
+  new-in-workdir: 144 # green (#a3be8c)
   typechange: 216    # yellow (#f6c177)
   deleted: 168       # red (#eb6f92)
   renamed: 73        # accent / blue (#569fba)

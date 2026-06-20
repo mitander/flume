@@ -1,1 +1,1 @@
-require("flume").setup()
+require("flume").load()
