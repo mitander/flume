@@ -10,14 +10,26 @@ local function hi(group, opts)
     vim.api.nvim_set_hl(0, group, opts)
 end
 
-local function is_dotted_zig_namespace(ev)
+local function get_zig_namespace_token_context(ev)
     local token = ev.data and ev.data.token
     if not token or token.type ~= "namespace" or vim.bo[ev.buf].filetype ~= "zig" then
-        return false
+        return nil
     end
 
     local line = vim.api.nvim_buf_get_lines(ev.buf, token.line, token.line + 1, false)[1] or ""
+    local start_col = token.start_col or 0
+    local end_col = token.end_col or (start_col + (token.length or 1))
+    local text = line:sub(start_col + 1, end_col)
+
+    return token, line, text
+end
+
+local function is_dotted_namespace_token(token, line)
     return line:sub(1, token.start_col):match("%.$") ~= nil
+end
+
+local function is_type_like_namespace(text)
+    return text:match("^[A-Z]") ~= nil
 end
 
 function M.setup(opts)
@@ -232,6 +244,7 @@ function M.load()
     hi("@lsp.typemod.property.static", { link = "Constant" })
 
     hi("FlumeDottedNamespace", { fg = c.syntax_namespace })
+    hi("FlumeTypeLikeNamespace", { fg = c.syntax_type })
 
     local semantic_tokens = vim.lsp and vim.lsp.semantic_tokens
     if semantic_tokens and semantic_tokens.highlight_token then
@@ -239,8 +252,15 @@ function M.load()
         vim.api.nvim_create_autocmd("LspTokenUpdate", {
             group = augroup,
             callback = function(ev)
-                if is_dotted_zig_namespace(ev) then
-                    semantic_tokens.highlight_token(ev.data.token, ev.buf, ev.data.client_id, "FlumeDottedNamespace")
+                local token, line, text = get_zig_namespace_token_context(ev)
+                if not token then
+                    return
+                end
+
+                if is_type_like_namespace(text) then
+                    semantic_tokens.highlight_token(token, ev.buf, ev.data.client_id, "FlumeTypeLikeNamespace")
+                elseif is_dotted_namespace_token(token, line) then
+                    semantic_tokens.highlight_token(token, ev.buf, ev.data.client_id, "FlumeDottedNamespace")
                 end
             end,
         })

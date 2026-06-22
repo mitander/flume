@@ -133,6 +133,7 @@ function M.compile_tmux()
 %%hidden thm_black="%s"
 %%hidden thm_gray="%s"
 %%hidden thm_lgray="%s"
+%%hidden thm_accent="%s"
 %%hidden thm_red="%s"
 %%hidden thm_green="%s"
 %%hidden thm_yellow="%s"
@@ -148,6 +149,7 @@ function M.compile_tmux()
         palette.black,
         palette.black, -- thm_gray
         palette.placeholder,
+        palette.accent,
         palette.red,
         palette.green,
         palette.yellow,
@@ -174,7 +176,7 @@ function M.compile_lsd()
 
 name:
   file: %d            # syntax_primary (%s)
-  dir: %d             # accent / blue (%s)
+  dir: %d             # accent (%s)
   pipe: %d            # cyan (%s)
   symlink: %d         # cyan (%s)
   block-device: %d    # magenta (%s)
@@ -224,7 +226,7 @@ git-status:
   new-in-workdir: %d  # green (%s)
   typechange: %d      # yellow (%s)
   deleted: %d         # red (%s)
-  renamed: %d         # accent / blue (%s)
+  renamed: %d         # accent (%s)
   modified: %d        # yellow (%s)
   conflicted: %d      # bright_red (%s)
 ]]
@@ -233,8 +235,8 @@ git-status:
         template,
         hex_to_xterm(palette.syntax_primary),
         palette.syntax_primary,
-        hex_to_xterm(palette.blue),
-        palette.blue,
+        hex_to_xterm(palette.accent),
+        palette.accent,
         hex_to_xterm(palette.cyan),
         palette.cyan,
         hex_to_xterm(palette.cyan),
@@ -313,8 +315,8 @@ git-status:
         palette.yellow,
         hex_to_xterm(palette.red),
         palette.red,
-        hex_to_xterm(palette.blue),
-        palette.blue,
+        hex_to_xterm(palette.accent),
+        palette.accent,
         hex_to_xterm(palette.yellow),
         palette.yellow,
         hex_to_xterm(palette.bright_red),
